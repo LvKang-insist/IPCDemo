@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.*
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.www.mk_ipc_demo.entity.Message
@@ -108,7 +107,6 @@ class MainActivity : AppCompatActivity() {
             val message = Message()
             message.content = "主进程发送的消息"
             messageServiceProxy?.sendMessage(message)
-            Log.e("-----", "主进程 发送完消息----------${message.isSendSuccess}")
         }
         register_listener.setOnClickListener {
             //添加消息监听
