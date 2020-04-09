@@ -1,0 +1,2 @@
+include ':app', ':mk_ipc_demo'
+rootProject.name='IPCDemo'
