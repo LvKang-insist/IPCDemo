@@ -7,9 +7,9 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
-import com.www.ipcdemo.ComputeImpl
+import com.www.ipcdemo.poll_service.ComputeImpl
 import com.www.ipcdemo.IBinderPool
-import com.www.ipcdemo.SecurityCenterImpl
+import com.www.ipcdemo.poll_service.SecurityCenterImpl
 import java.util.concurrent.CountDownLatch
 
 /**

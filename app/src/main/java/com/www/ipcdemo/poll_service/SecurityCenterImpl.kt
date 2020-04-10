@@ -1,4 +1,6 @@
-package com.www.ipcdemo
+package com.www.ipcdemo.poll_service
+
+import com.www.ipcdemo.ISecurityCenter
 
 class SecurityCenterImpl : ISecurityCenter.Stub() {
 
