@@ -1,22 +1,21 @@
-package com.www.ipcdemo.view
+package com.www.ipcdemo.page
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
-import android.view.ViewConfiguration
-import android.view.ViewGroup
-import android.widget.Scroller
+import android.view.*
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewConfigurationCompat
 import kotlin.math.abs
+
 
 class ScrollerLayout : ViewGroup {
 
     /**
      * 用于完成滚动操作的实例
      */
-    private var mScroller: Scroller
+    private var mScroller: ScrollerExt
 
     /**
      * 判定为拖动的最小移动像素
@@ -34,6 +33,11 @@ class ScrollerLayout : ViewGroup {
     private var mXMove = 0f
 
     /**
+     * 手指离开屏幕的坐标
+     */
+    private var mXUp = 0f
+
+    /**
      * 上次触发 MOVE 事件的屏幕坐标
      */
     private var mXLastMove = 0f
@@ -48,12 +52,36 @@ class ScrollerLayout : ViewGroup {
      */
     private var rightBorder = 0
 
+    private var targetIndex = -1
+
+    private var layoutInflater = LayoutInflater.from(context)
+
+
+    /**
+     * 适配器
+     */
+    var adapter: PageAdapter? = null
+        set(value) {
+            field = value
+            startItem()
+        }
+
+    /**
+     * 下标
+     */
+    private var mPosition: Int = 0
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet) {
-        mScroller = Scroller(context)
+        mScroller = ScrollerExt(context)
+        mScroller.listener = listener
         //最小移动距离
         mTouchSlop = ViewConfigurationCompat.getScaledHoverSlop(ViewConfiguration.get(context))
+
+        //让当前view 可以点击
+        isClickable = true
     }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -64,8 +92,60 @@ class ScrollerLayout : ViewGroup {
         }
     }
 
+    private fun drawView(views: MutableList<View>) {
+        views.forEach {
+            addView(it)
+        }
+        invalidate()
+
+        for (i in 1..views.size - 2) {
+            adapter?.view(views[i], i - 1)
+        }
+
+        viewTreeObserver.addOnGlobalLayoutListener {
+            scrollTo(width, 0)
+
+            if ((views[childCount - 2] as AppCompatImageView).drawable != null) {
+                val bitmap =
+                    (((views[childCount - 2] as AppCompatImageView).drawable) as BitmapDrawable).bitmap
+                (views[0] as AppCompatImageView).setImageBitmap(bitmap)
+            }
+
+            if ((views[1] as AppCompatImageView).drawable != null) {
+                val bitmap =
+                    (((views[1] as AppCompatImageView).drawable) as BitmapDrawable).bitmap
+                (views[views.size - 1] as AppCompatImageView).setImageBitmap(bitmap)
+            }
+        }
+
+
+    }
+
+    private fun startItem() {
+        val count = adapter?.count()
+        val listOf = mutableListOf<View>()
+
+        val fist = layoutInflater.inflate(
+            adapter?.layoutRes!!, this, false
+        ) as AppCompatImageView
+        listOf.add(fist)
+        for (i in 0 until count!!) {
+            val iv =
+                layoutInflater.inflate(
+                    adapter?.layoutRes!!, this, false
+                ) as AppCompatImageView
+            listOf.add(iv)
+        }
+        val end = layoutInflater.inflate(
+            adapter?.layoutRes!!, this, false
+        ) as AppCompatImageView
+        listOf.add(end)
+
+        drawView(listOf)
+    }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        if (changed) {
+        if (changed && childCount > 0) {
             val childCount = childCount
             for (i in 0 until childCount) {
                 val childView = getChildAt(i)
@@ -107,7 +187,6 @@ class ScrollerLayout : ViewGroup {
 
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
-
                 mXMove = event.rawX
                 //移动的距离
                 val scrolledX = (mXLastMove - mXMove).toInt()
@@ -124,17 +203,33 @@ class ScrollerLayout : ViewGroup {
                 mXLastMove = mXMove
             }
             MotionEvent.ACTION_UP -> {
+                mXUp = event.rawX
                 //当手指抬起时，根据当前滚动值来判定应该滚动到那个子控件界面
-                val targetIndex = (scrollX + width / 2) / width
+                //计算收松开后要显示的页面 index
+                targetIndex = if (mXDown > event.rawX) {
+                    (scrollX + (width * 0.8).toInt()) / width
+                } else {
+                    (scrollX + (width * 0.2).toInt()) / width
+                }
                 val dx = targetIndex * width - scrollX
-                Log.e("onTouchEvent","$targetIndex  ----- $dx")
                 //第二步，调用 startScroll 方法来初始化数据并刷新界面
                 mScroller.startScroll(scrollX, 0, dx, 0)
+
+                when (targetIndex) {
+                    0 -> {
+                    }
+                    (childCount - 1) -> {
+                    }
+                    else -> {
+                        mPosition = targetIndex - 1
+                    }
+                }
                 invalidate()
             }
         }
         return super.onTouchEvent(event)
     }
+
 
     override fun computeScroll() {
         //第三步，重新 computeScroll 方法，并在内部完成平滑滚动逻辑
@@ -142,6 +237,24 @@ class ScrollerLayout : ViewGroup {
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.currX, mScroller.currY)
             invalidate()
+        }
+    }
+
+    private val listener = object : ScrollerExt.ScrollListener {
+        override fun isScroll(isScroll: Boolean) {
+            if (!isScroll) {
+                if (abs(mXDown - mXUp) > mTouchSlop) {
+                    if (targetIndex == childCount - 1) {
+                        targetIndex = -1
+                        mPosition = 0
+                        scrollTo(width, 0)
+                    } else if (targetIndex == 0) {
+                        targetIndex = -1
+                        mPosition = childCount - 2
+                        scrollTo(width * (childCount - 2), 0)
+                    }
+                }
+            }
         }
     }
 }

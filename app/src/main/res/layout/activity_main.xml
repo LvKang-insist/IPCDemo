@@ -1,33 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.www.ipcdemo.view.ScrollerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.www.ipcdemo.page.ScrollerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="center"
-        android:text="1"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="center"
-        android:text="2"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="center"
-        android:text="3"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
-
-</com.www.ipcdemo.view.ScrollerLayout>
+</com.www.ipcdemo.page.ScrollerLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.www.ipcdemo.service.BinderPoll
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var binderPoll: BinderPoll
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
 //        main_tv.setOnClickListener {
 //            doWork() }
 
+
+        layout.adapter = ScrollerAdapter(R.layout.item)
 
     }
 
