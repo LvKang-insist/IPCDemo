@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.www.ipcdemo.page.ScrollerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:context=".MainActivity">
+
+    <com.www.ipcdemo.view.ItemListLayout
+        android:id="@+id/itemList_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff0000"
+        android:padding="10dp" />
 
 
-</com.www.ipcdemo.page.ScrollerLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

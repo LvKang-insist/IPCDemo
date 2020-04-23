@@ -2,8 +2,11 @@ package com.www.ipcdemo
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import com.www.ipcdemo.service.BinderPoll
+import com.www.ipcdemo.view.ItemListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +22,25 @@ class MainActivity : AppCompatActivity() {
 //            doWork() }
 
 
-        layout.adapter = ScrollerAdapter(R.layout.item)
+//        layout.adapter = ScrollerAdapter(R.layout.item)
+
+        itemList_layout.setAdapter(MainListAdapter())
+
+    }
+
+    class MainListAdapter : ItemListAdapter() {
+        override fun getCount(): Int {
+            return 20
+        }
+
+        override fun gerResId(): Int {
+            return R.layout.item_text
+        }
+
+        override fun view(view: View, position: Int) {
+            val text = view.findViewById<AppCompatTextView>(R.id.item_text)
+            text.text = position.toString()
+        }
 
     }
 
