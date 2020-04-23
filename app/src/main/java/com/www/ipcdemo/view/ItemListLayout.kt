@@ -74,6 +74,7 @@ class ItemListLayout : ViewGroup {
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        Toast.makeText(context, "哈哈·", Toast.LENGTH_LONG).show()
         //行
         val lineCount = childCount / horCount
         //宽
@@ -125,27 +126,30 @@ class ItemListLayout : ViewGroup {
         var downX = 0f
         var downY = 0f
         var isMove = false
+        var vX = 0f
+        var vY = 0f
         val gestureDetector = GestureDetector(GestureListener(view))
         //触摸事件
-        view.setOnTouchListener(object : OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent): Boolean {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        downX = event.rawX
-                        downY = event.rawY
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        isMove = true
-                        view.animate().translationX(event.rawX - downX).duration = 0
-                        view.animate().translationY(event.rawY - downY).duration = 0
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        Toast.makeText(view.context, "抬起", Toast.LENGTH_LONG).show()
-                    }
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = event.rawX
+                    downY = event.rawY
+                    vX = view.x
+                    vY = view.y
                 }
-                return true
+                MotionEvent.ACTION_MOVE -> {
+                    isMove = true
+                    view.animate().translationX(event.rawX - downX).duration = 0
+                    view.animate().translationY(event.rawY - downY).duration = 0
+                }
+                MotionEvent.ACTION_UP -> {
+                    val fx = (view.x - vX)
+                    val fy = view.y - vY
+                }
             }
-        });
+            true
+        }
         //获取焦点
         view.isFocusable = true;
         //启用或者禁用 单击事件
