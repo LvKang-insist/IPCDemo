@@ -4,15 +4,30 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.www.ipcdemo.view.ItemListLayout
-        android:id="@+id/itemList_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ff0000"
-        android:padding="10dp" />
 
+    <Button
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Ok"
+        android:layout_marginTop="10dp"
+        android:textColor="#000000" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Ok"
+        android:layout_marginTop="10dp"
+        android:textColor="#000000" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

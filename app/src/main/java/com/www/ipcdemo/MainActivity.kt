@@ -5,7 +5,11 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.www.ipcdemo.service.BinderPoll
+import com.www.ipcdemo.ui.ItemTouchCallback
+import com.www.ipcdemo.ui.RecyclerAdapter
 import com.www.ipcdemo.view.ItemListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -17,16 +21,42 @@ class MainActivity : AppCompatActivity() {
 
         //打开Service池
         binderPoll = BinderPoll.getInstance(this)
-
 //        main_tv.setOnClickListener {
 //            doWork() }
-
-
 //        layout.adapter = ScrollerAdapter(R.layout.item)
+//        itemList_layout.setAdapter(MainListAdapter())
 
-        itemList_layout.setAdapter(MainListAdapter())
 
+        val list = mutableListOf<String>()
+        for (i in 0..20) {
+            list.add("第 $i 个")
+        }
+
+        recycler.layoutManager = GridLayoutManager(this, 4)
+        val recyclerAdapter = RecyclerAdapter(list,recycler)
+        recycler.adapter = recyclerAdapter
+
+
+        //创建 itemHelper
+        val callback = ItemTouchCallback()
+        callback.onItemTouchListener = recyclerAdapter.ItemTouchListener()
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(recycler)
+//
+        save.setOnClickListener {
+            recyclerAdapter.isDel = false
+            recyclerAdapter.notifyDataSetChanged()
+        }
+
+
+
+        button.setOnClickListener {
+            list.forEach {
+                Log.e("------------", it)
+            }
+        }
     }
+
 
     class MainListAdapter : ItemListAdapter() {
         override fun getCount(): Int {
